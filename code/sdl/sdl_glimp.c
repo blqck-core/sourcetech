@@ -127,7 +127,7 @@ static int FindNearestDisplay( int *x, int *y, int w, int h ) {
 	return index;
 }
 
-#define MAX_RESOLUTIONS 25
+#define MAX_RESOLUTIONS 64
 
 void GLW_DetectDisplayModes( int display ) {
     int numModes = SDL_GetNumDisplayModes(display);
@@ -136,14 +136,12 @@ void GLW_DetectDisplayModes( int display ) {
         return;
     }
 
-    char modesStr[1024] = {0};
     char resList[MAX_RESOLUTIONS][16];
     int resCount = 0;
 
     for (int i = 0; i < numModes && resCount < MAX_RESOLUTIONS; ++i) {
         SDL_DisplayMode mode;
-        if (SDL_GetDisplayMode(display, i, &mode) != 0)
-            continue;
+        if (SDL_GetDisplayMode(display, i, &mode) != 0) continue;
 
         char resStr[16];
         Com_sprintf(resStr, sizeof(resStr), "%dx%d", mode.w, mode.h);
@@ -156,18 +154,11 @@ void GLW_DetectDisplayModes( int display ) {
             }
         }
 
-        if (!duplicate) {
-            Q_strncpyz(resList[resCount++], resStr, sizeof(resList[0]));
-        }
+        if (!duplicate) Q_strncpyz(resList[resCount++], resStr, sizeof(resList[0]));
     }
 
-    for (int i = 0; i < resCount; ++i) {
-        Q_strcat(modesStr, sizeof(modesStr), resList[i]);
-        if (i < resCount - 1)
-            Q_strcat(modesStr, sizeof(modesStr), " ");
-    }
-
-    Cvar_Set("r_availableModes", modesStr);
+    for (int i = 0; ; ++i) Cvar_Set(va("displaymode.%i", i), "");
+    for (int i = 0; i < resCount; ++i) Cvar_Set(va("displaymode.%i", i), resList[i]);
 }
 
 /*
