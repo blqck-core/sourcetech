@@ -141,7 +141,7 @@ void GLW_DetectDisplayModes( int display ) {
 
     for (int i = 0; i < numModes && resCount < MAX_RESOLUTIONS; ++i) {
         SDL_DisplayMode mode;
-        if (SDL_GetDisplayMode(display, i, &mode) != 0) continue;
+        if(SDL_GetDisplayMode(display, i, &mode) != 0) continue;
 
         char resStr[16];
         Com_sprintf(resStr, sizeof(resStr), "%dx%d", mode.w, mode.h);
@@ -157,7 +157,7 @@ void GLW_DetectDisplayModes( int display ) {
         if (!duplicate) Q_strncpyz(resList[resCount++], resStr, sizeof(resList[0]));
     }
 
-    for (int i = 0; ; ++i) Cvar_Set(va("displaymode.%i", i), "");
+    for (int i = 0; i < MAX_RESOLUTIONS; ++i) Cvar_Set(va("displaymode.%i", i), "");
     for (int i = 0; i < resCount; ++i) Cvar_Set(va("displaymode.%i", i), resList[i]);
 }
 
