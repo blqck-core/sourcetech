@@ -365,7 +365,7 @@ static void Cmd_JSEval_f(void) {
         return;
     }
     
-    JSEval(Cmd_Argv(1), qtrue, qfalse, NULL);
+    JSEval(va("\"%s\"", Cmd_Argv(1)), qtrue, qfalse, NULL);
 }
 
 qboolean JSCall(int func_id, js_args_t* args, js_result_t* result) {
