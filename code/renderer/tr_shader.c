@@ -2700,7 +2700,7 @@ shader_t *R_FindShader( const char *name, int lightmapIndex, qboolean mipRawImag
 		lightmapIndex = LIGHTMAP_BY_VERTEX;
 	}
 
-	COM_StripExtension(name, strippedName, sizeof(strippedName));
+	COM_ReplaceExtensionToPNG(name, strippedName, sizeof(strippedName));
 
 	hash = generateHashValue(strippedName, FILE_HASH_SIZE);
 

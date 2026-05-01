@@ -87,6 +87,40 @@ void COM_StripExtension( const char *in, char *out, int destsize )
 		Q_strncpyz(out, in, destsize);
 }
 
+/*
+============
+COM_ReplaceExtensionToPNG
+============
+*/
+void COM_ReplaceExtensionToPNG( const char *in, char *out, int destsize )
+{
+	const char *dot = strrchr(in, '.');
+	const char *slash = strrchr(in, '/');
+	
+	// Длина строки без расширения
+	int baseLen;
+	if (dot && (slash == NULL || slash < dot))
+		baseLen = dot - in;
+	else
+		baseLen = strlen(in);
+	
+	// Лимит: нужно место под baseLen + ".png" + '\0'
+	int maxBase = destsize - 5;
+	if (maxBase < 0) maxBase = 0;
+	if (baseLen > maxBase)
+		baseLen = maxBase;
+	
+	// Копируем имя без расширения (обрезаем если нужно)
+	memcpy(out, in, baseLen);
+	
+	// Добавляем ".png"
+	out[baseLen] = '.';
+	out[baseLen + 1] = 'p';
+	out[baseLen + 2] = 'n';
+	out[baseLen + 3] = 'g';
+	out[baseLen + 4] = '\0';
+}
+
 
 /*
 ============
