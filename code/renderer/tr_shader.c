@@ -1315,7 +1315,7 @@ static void ParseSkyParms( const char **text ) {
 	}
 	if ( strcmp( token, "-" ) ) {
 		for (i=0 ; i<6 ; i++) {
-			Com_sprintf( pathname, sizeof(pathname), "%s_%s.tga"
+			Com_sprintf( pathname, sizeof(pathname), "%s_%s.png"
 				, token, suf[i] );
 			shader.sky.outerbox[i] = R_FindImageFile( pathname, imgFlags | IMGFLAG_CLAMPTOEDGE );
 
@@ -1345,7 +1345,7 @@ static void ParseSkyParms( const char **text ) {
 	}
 	if ( strcmp( token, "-" ) ) {
 		for (i=0 ; i<6 ; i++) {
-			Com_sprintf( pathname, sizeof(pathname), "%s_%s.tga"
+			Com_sprintf( pathname, sizeof(pathname), "%s_%s.png"
 				, token, suf[i] );
 			shader.sky.innerbox[i] = R_FindImageFile( pathname, imgFlags );
 			if ( !shader.sky.innerbox[i] ) {
@@ -2700,7 +2700,7 @@ shader_t *R_FindShader( const char *name, int lightmapIndex, qboolean mipRawImag
 		lightmapIndex = LIGHTMAP_BY_VERTEX;
 	}
 
-	COM_ReplaceExtensionToPNG(name, strippedName, sizeof(strippedName));
+	COM_StripExtension(name, strippedName, sizeof(strippedName));
 
 	hash = generateHashValue(strippedName, FILE_HASH_SIZE);
 
