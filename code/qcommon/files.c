@@ -197,38 +197,35 @@ fileHandle_t FS_FOpenFileAppend( const char *filename ) {
 	fd->handleSync = qfalse;
 
 	return f;
-
+}
 
 int FS_FOpenFileRead( const char *filename, fileHandle_t *file, qboolean uniqueFILE ) {
-    char netpath[MAX_OSPATH];
-    FILE *temp = NULL;
-    int length;
-    char localFilename[MAX_OSPATH];   // локальная копия
+	char netpath[MAX_OSPATH];
+	FILE *temp;
+	int length;
+	char localFilename[MAX_OSPATH];
 
-    if ( !filename ) {
-        Com_Error( ERR_FATAL, "FS_FOpenFileRead: NULL 'filename' parameter passed\n" );
+	if ( !filename ) {
+		Com_Error( ERR_FATAL, "FS_FOpenFileRead: NULL 'filename' parameter passed\n" );
+	}
+
+	// Убираем начальный слэш, если есть
+	if ( filename[0] == '/' || filename[0] == '\\' ) {
+		filename++;
+	}
+
+    for(int i = 0; i <= addon_count->integer; i++) {
+        Q_strncpyz( localFilename, filename, sizeof( localFilename ) );
+    	Q_strncpyz( netpath, Sys_DefaultBasePath(), sizeof( netpath ) );
+    	if(i == addon_count->integer) Q_strcat( netpath, sizeof( netpath ), "/" );
+    	else Q_strcat( netpath, sizeof( netpath ), va("/addons/%s/", addon_name[i]->string));
+    	Q_strcat( netpath, sizeof( netpath ), localFilename );
+    
+    	Com_Printf("searching attempt %i: target= %s | addon= %s | file= %s \n", i, netpath, addon_name[i]->string, localFilename);
+    	temp = Sys_FOpen( netpath, "rb" );
+    	if(temp) break;
     }
-
-    if ( filename[0] == '/' || filename[0] == '\\' ) {
-        filename++;
-    }
-    Q_strncpyz( localFilename, filename, sizeof( localFilename ) );
-
-    // далее везде в цикле юзаем localFilename ибо filename засирается
-    for ( int i = 0; i <= addon_count->integer; i++ ) {
-        Q_strncpyz( netpath, Sys_DefaultBasePath(), sizeof( netpath ) );
-        if ( i == addon_count->integer ) {
-            Q_strcat( netpath, sizeof( netpath ), "/" );
-        } else {
-            Q_strcat( netpath, sizeof( netpath ), va( "/addons/%s/", addon_name[i]->string ) );
-        }
-        Q_strcat( netpath, sizeof( netpath ), localFilename );   // юзаем копию
-
-        Com_Printf("searching attempt %i: target= %s | addon= %s | file= %s \n", i, netpath, addon_name[i]->string, localFilename);
-        temp = Sys_FOpen( netpath, "rb" );
-        if ( temp ) break;
-    }
-
+    
 	if ( !temp ) {
 		if ( file ) {
 			*file = FS_INVALID_HANDLE;
