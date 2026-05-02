@@ -226,6 +226,7 @@ int FS_FOpenFileRead( const char *filename, fileHandle_t *file, qboolean uniqueF
     	}
     	Q_strcat( netpath, sizeof( netpath ), localFilename );
     
+    	Com_Printf("searching attempt %i: target= %s | addon= %s | file= %s \n", i, netpath, addon_name[i]->string, localFilename);
     	temp = Sys_FOpen( netpath, "rb" );
     	if(temp) break;
     }
@@ -248,7 +249,7 @@ int FS_FOpenFileRead( const char *filename, fileHandle_t *file, qboolean uniqueF
 	*file = FS_HandleForFile();
 	fileHandleData_t *f = &fsh[*file];
 	f->handleFiles.file.o = temp;
-	Q_strncpyz( f->name, filename, sizeof( f->name ) );
+	Q_strncpyz( f->name, localFilename, sizeof( f->name ) );
 
 	return FS_FileLength( temp );
 }
