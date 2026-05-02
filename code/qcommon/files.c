@@ -221,6 +221,7 @@ int FS_FOpenFileRead( const char *filename, fileHandle_t *file, qboolean uniqueF
     	Q_strcat( netpath, sizeof( netpath ), filename );
     
     	// Открываем файл
+    	Com_Printf("seaching %i: %s", i, netpath);
     	temp = Sys_FOpen( netpath, "rb" );
     	if(temp) break;
     }
