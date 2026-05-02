@@ -226,7 +226,6 @@ int FS_FOpenFileRead( const char *filename, fileHandle_t *file, qboolean uniqueF
     	}
     	Q_strcat( netpath, sizeof( netpath ), localFilename );
     
-    	Com_Printf("searching attempt %i: target= %s | addon= %s | file= %s \n", i, netpath, addon_name[i]->string, localFilename);
     	temp = Sys_FOpen( netpath, "rb" );
     	if(temp) break;
     }
