@@ -209,19 +209,23 @@ int FS_FOpenFileRead( const char *filename, fileHandle_t *file, qboolean uniqueF
 		Com_Error( ERR_FATAL, "FS_FOpenFileRead: NULL 'filename' parameter passed\n" );
 	}
 
-	// Убираем начальный слэш, если есть
 	if ( filename[0] == '/' || filename[0] == '\\' ) {
 		filename++;
 	}
+	
+	Q_strncpyz(localFilename, filename, sizeof(localFilename)); //FIXME, MAYBE va() где-то используется для аргумента filename и после этого через va() ниже, от которого я избавился, filename начинает указывать на мусор, сохраняем тут чистый filename, а там похуй, потом посмотрю.
 
     for(int i = 0; i <= addon_count->integer; i++) {
-        Q_strncpyz( localFilename, filename, sizeof( localFilename ) );
-    	Q_strncpyz( netpath, Sys_DefaultBasePath(), sizeof( netpath ) );
-    	if(i == addon_count->integer) Q_strcat( netpath, sizeof( netpath ), "/" );
-    	else Q_strcat( netpath, sizeof( netpath ), va("/addons/%s/", addon_name[i]->string));
+    	Q_strncpyz(netpath, Sys_DefaultBasePath(), sizeof(netpath));
+    	if(i == addon_count->integer) {
+    	    Q_strcat( netpath, sizeof( netpath ), "/" );
+    	} else {
+    	    Q_strcat( netpath, sizeof( netpath ), "/addons/");
+    	    Q_strcat( netpath, sizeof( netpath ), addon_name[i]->string);
+    	    Q_strcat( netpath, sizeof( netpath ), "/");
+    	}
     	Q_strcat( netpath, sizeof( netpath ), localFilename );
     
-    	Com_Printf("searching attempt %i: target= %s | addon= %s | file= %s \n", i, netpath, addon_name[i]->string, localFilename);
     	temp = Sys_FOpen( netpath, "rb" );
     	if(temp) break;
     }
